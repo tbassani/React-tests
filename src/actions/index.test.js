@@ -8,19 +8,19 @@ describe('getSecretWord', () => {
   afterEach(() => {
     moxios.uninstall();
   });
-  test('secretWord is returned', () => {
+  test('secretWord is returned', async () => {
     moxios.wait(() => {
       const request = moxios.requests.mostRecent();
       request.respondWith({
         status: 200,
-        response: 'party',
+        response: ['party'],
       });
     });
 
+    const setSecretWordMock = jest.fn();
+
     // update to test app in Redux / context sections
-    return getSecretWord()
-      .then((secretWord) => {
-        expect(secretWord).toBe('party');
-      });
+    await getSecretWord(setSecretWordMock);
+    expect(setSecretWordMock).toHaveBeenCalledWith('party');
   });
 });
