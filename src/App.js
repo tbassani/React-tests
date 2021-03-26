@@ -17,7 +17,7 @@ const reducer = (prevState, action) => {
 
 function App() {
   //const [secretWord, setSecretWord] = useState('');
-  const [state, dispatch] = useReducer(reducer, { secretWord: '' });
+  const [state, dispatch] = useReducer(reducer, { secretWord: null });
   // TODO: get props from shared state
   const success = false;
   const guessedWords = [];
@@ -29,6 +29,17 @@ function App() {
   useEffect(() => {
     getSecretWord(setSecretWord);
   }, []);
+
+  if (state.secretWord === null) {
+    return (
+      <div className="container" data-test="spinner">
+        <div className="spinner-border" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+        <p>Loading secret word...</p>
+      </div>
+    );
+  }
 
   return (
     <div data-test="component-app" className="container">
