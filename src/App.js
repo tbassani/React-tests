@@ -12,7 +12,7 @@ import languageContext from './contexts/languageContext';
 const reducer = (prevState, action) => {
   switch (action.type) {
     case 'setSecretWord':
-      return { ...prevState, setSecretWord: action.payload };
+      return { ...prevState, secretWord: action.payload };
     case 'setLanguage':
       return { ...prevState, language: action.payload };
     default:
