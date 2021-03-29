@@ -1,6 +1,7 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { findByTestAttr, checkProps } from '../test/testUtils';
+import languageContext from './contexts/languageContext';
 
 import Input from './Input';
 
@@ -11,16 +12,37 @@ import Input from './Input';
 //   useState: (initialState) => [initialState, mockSetCurrentGuess]
 // }))
 
-const setup = (success=false, secretWord='party') => {
-  return shallow(<Input success={success} secretWord={secretWord} />);
-}
+const setup = ({ success, secretWord, language }) => {
+  language = language || 'en';
+  secretWord = secretWord || 'party';
+  success = success || false;
+  return mount(
+    <languageContext.Provider value={language}>
+      <Input success={success} secretWord={secretWord} />
+    </languageContext.Provider>
+  );
+};
+
+describe('languagePicker', () => {
+  test('correctly renders congrats string  in english', () => {
+    const wrapper = setup({ success: false, secretWord: 'party', language: 'en' });
+    const submitButton = findByTestAttr(wrapper, 'submit-button');
+    expect(submitButton.text()).toBe('Submit');
+  });
+
+  test('correctly renders congrats string  in emoji', () => {
+    const wrapper = setup({ success: false, secretWord: 'party', language: 'emoji' });
+    const submitButton = findByTestAttr(wrapper, 'submit-button');
+    expect(submitButton.text()).toBe('🚀');
+  });
+});
 
 describe('render', () => {
   describe('success is false', () => {
     let wrapper;
     beforeEach(() => {
-      wrapper = setup(false);
-    })
+      wrapper = setup({ success: false });
+    });
     test('Input renders without error', () => {
       const inputComponent = findByTestAttr(wrapper, 'component-input');
       expect(inputComponent.length).toBe(1);
@@ -37,8 +59,8 @@ describe('render', () => {
   describe('success is true', () => {
     let wrapper;
     beforeEach(() => {
-      wrapper = setup(true);
-    })
+      wrapper = setup({ success: true });
+    });
     test('Input renders without error', () => {
       const inputComponent = findByTestAttr(wrapper, 'component-input');
       expect(inputComponent.length).toBe(1);
@@ -56,7 +78,7 @@ describe('render', () => {
 
 test('does not throw warning with expected props', () => {
   checkProps(Input, { secretWord: 'party' });
-})
+});
 
 describe('state controlled input field', () => {
   let mockSetCurrentGuess = jest.fn();
@@ -66,8 +88,8 @@ describe('state controlled input field', () => {
   beforeEach(() => {
     mockSetCurrentGuess.mockClear();
     originalUseState = React.useState;
-    React.useState = () => ["", mockSetCurrentGuess];
-    wrapper = setup();
+    React.useState = () => ['', mockSetCurrentGuess];
+    wrapper = setup({});
   });
   afterEach(() => {
     React.useState = originalUseState;
@@ -76,14 +98,14 @@ describe('state controlled input field', () => {
     const inputBox = findByTestAttr(wrapper, 'input-box');
     const mockEvent = { target: { value: 'train' } };
 
-    inputBox.simulate("change", mockEvent);
+    inputBox.simulate('change', mockEvent);
     expect(mockSetCurrentGuess).toHaveBeenCalledWith('train');
   });
   test('field is cleared upon submit button click', () => {
     const inputBox = findByTestAttr(wrapper, 'input-box');
     const mockEvent = { target: { value: 'train' } };
 
-    inputBox.simulate("change", mockEvent);
+    inputBox.simulate('change', mockEvent);
     expect(mockSetCurrentGuess).toHaveBeenCalledWith('train');
   });
-})
+});
