@@ -27,8 +27,6 @@ function App() {
   //const [secretWord, setSecretWord] = useState('');
   const [state, dispatch] = useReducer(reducer, { secretWord: null, language: 'en' });
   // TODO: get props from shared state
-  const success = false;
-  const guessedWords = [];
 
   const setSecretWord = (secretWord) => {
     dispatch({ type: 'setSecretWord', payload: secretWord });
@@ -56,6 +54,7 @@ function App() {
   return (
     <div data-test="component-app" className="container">
       <h1>Jotto</h1>
+      <p>The secret word is: {state.secretWord}</p>
       <languageContext.Provider value={state.language}>
         <LanguagePicker setLanguage={setLanguage} />
         <guessedWordsContext.GuessedWordsProvider>
