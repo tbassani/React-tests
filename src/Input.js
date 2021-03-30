@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import languageContext from './contexts/languageContext';
 import stringsModule from './helpers/strings';
 
-function Input({ secretWord, success }) {
+import successContext from './contexts/successContext';
+
+function Input({ secretWord }) {
   const language = React.useContext(languageContext);
+  const [success, setSuccess] = successContext.useSuccess();
   const [currentGuess, setCurrentGuess] = React.useState('');
 
   const buttonText = stringsModule.getStringByLanguage(language, 'submit');
