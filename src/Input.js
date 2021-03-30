@@ -32,7 +32,9 @@ function Input({ secretWord }) {
           onClick={(evt) => {
             evt.preventDefault();
             // TODO: update guessedWords
-            // TODO: check against secretWord and update success if necessary
+            if (currentGuess === secretWord) {
+              setSuccess(true);
+            }
             setCurrentGuess('');
           }}
           className="btn btn-primary mb-2"
